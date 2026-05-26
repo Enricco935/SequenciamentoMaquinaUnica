@@ -1,0 +1,24 @@
+set JOBS := L1 L2 L3 L4;
+
+param a := 3;
+param b := 10;
+
+param p :=
+L1 76
+L2 212
+L3 134
+L4 98;
+
+param d :=
+L1 150
+L2 240
+L3 300
+L4 294 ;
+
+param setup :
+     L1   L2   L3   L4 :=
+L1    0    3    3    3
+L2    3    0    3    3
+L3    3    3    0    3
+L4    3    3    3    0 ;
+

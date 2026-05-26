@@ -1,0 +1,71 @@
+Problem:    sq
+Rows:       23
+Columns:    24 (12 integer, 12 binary)
+Non-zeros:  68
+Status:     INTEGER OPTIMAL
+Objective:  Custo = 9870 (MINimum)
+
+   No.   Row name        Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 Custo                    9870                             
+     2 c1[L1,L2]               -9686         -9924               
+     3 c1[L1,L3]               -9823         -9924               
+     4 c1[L1,L4]               -9924         -9924               
+     5 c1[L2,L1]                -317         -9788               
+     6 c1[L2,L3]                -137         -9788               
+     7 c1[L2,L4]                -238         -9788               
+     8 c1[L3,L1]                -180         -9866               
+     9 c1[L3,L2]               -9866         -9866               
+    10 c1[L3,L4]                -101         -9866               
+    11 c1[L4,L1]                 -79         -9902               
+    12 c1[L4,L2]               -9765         -9902               
+    13 c1[L4,L3]               -9902         -9902               
+    14 c2[L1,L2]                   1             1             = 
+    15 c2[L1,L3]                   1             1             = 
+    16 c2[L1,L4]                   1             1             = 
+    17 c2[L2,L3]                   1             1             = 
+    18 c2[L2,L4]                   1             1             = 
+    19 c2[L3,L4]                   1             1             = 
+    20 c3[L1]                    -61           -61             = 
+    21 c3[L2]                   -188          -188             = 
+    22 c3[L3]                   -104          -104             = 
+    23 c3[L4]                    -58           -58             = 
+
+   No. Column name       Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 S[L1]                       0             0               
+     2 S[L2]                     317             0               
+     3 S[L3]                     180             0               
+     4 S[L4]                      79             0               
+     5 T[L1]                      61             0               
+     6 T[L2]                     505             0               
+     7 T[L3]                     284             0               
+     8 T[L4]                     137             0               
+     9 E[L1]                       0             0               
+    10 E[L2]                       0             0               
+    11 E[L3]                       0             0               
+    12 E[L4]                       0             0               
+    13 x[L1,L2]     *              1             0             1 
+    14 x[L1,L3]     *              1             0             1 
+    15 x[L1,L4]     *              1             0             1 
+    16 x[L2,L1]     *              0             0             1 
+    17 x[L2,L3]     *              0             0             1 
+    18 x[L2,L4]     *              0             0             1 
+    19 x[L3,L1]     *              0             0             1 
+    20 x[L3,L2]     *              1             0             1 
+    21 x[L3,L4]     *              0             0             1 
+    22 x[L4,L1]     *              0             0             1 
+    23 x[L4,L2]     *              1             0             1 
+    24 x[L4,L3]     *              1             0             1 
+
+Integer feasibility conditions:
+
+KKT.PE: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+KKT.PB: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+End of output
