@@ -2,13 +2,13 @@ set JOBS;
 
 param a;		 # custo antecipacao
 param b;		 # custo atraso
-param p{JOBS};           # tempo de processamento
-param d{JOBS};           # prazo maximo
-param setup{JOBS,JOBS};  # tempo de setup
+param p{JOBS};           # tempo de processamento do job 
+param d{JOBS};           # prazo maximo do job 
+param setup{JOBS,JOBS};  # tempo de setup do job 
 
-var S{JOBS} >= 0;        # inicio
-var T{JOBS} >= 0;        # atraso
-var E{JOBS} >= 0;	 # adiantamento
+var S{JOBS} >= 0;         # inicio de processamento do job 
+var T{JOBS} >= 0;         # atraso de processamento do job
+var E{JOBS} >= 0;         # adiantamento de processamento do job
 var x{JOBS,JOBS} binary; # ordem
 
 minimize Custo: sum{i in JOBS} (T[i]*b + E[i]*a);
@@ -24,5 +24,6 @@ solve;
 
 printf {i in JOBS} "%s %f\n", i, S[i];
 
+end;
 
 

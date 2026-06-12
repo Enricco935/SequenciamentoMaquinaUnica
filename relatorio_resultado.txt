@@ -1,0 +1,27 @@
+RELATORIO DE PROGRAMACAO DA PRODUCAO
+
+Resumo da recomendacao
+Foi encontrada a melhor programacao possivel para os dados informados.
+Custo total estimado da programacao: R$ 716
+Custo por antecipacao: R$ 0
+Custo por atraso: R$ 716
+Total de tempo antecipado: 0
+Total de tempo em atraso: 179
+
+Quantidade recomendada por item
+Chapa 1: produzir 9 unidade(s).
+Chapa 2: produzir 9 unidade(s).
+
+Decisoes calculadas pelo sistema
+1. Lote 1 - Chapa 1: produzir 4 unidade(s), iniciar no tempo 0, terminar no tempo 16, prazo 4 (com atraso de 12).
+2. Lote 2 - Chapa 1: produzir 5 unidade(s), iniciar no tempo 16, terminar no tempo 36, prazo 5 (com atraso de 31).
+3. Lote 2 - Chapa 2: produzir 4 unidade(s), iniciar no tempo 40, terminar no tempo 60, prazo 5 (com atraso de 55).
+4. Lote 1 - Chapa 2: produzir 5 unidade(s), iniciar no tempo 60, terminar no tempo 85, prazo 4 (com atraso de 81).
+
+Arquivos gerados
+Relatorio para decisao: C:\Users\admin\Documents\terceiro_periodo\Trabalho_po_sequenciamento_maquina\SequenciamentoMaquinaUnica\relatorio_resultado.txt
+Arquivo de dados usado no calculo: C:\Users\admin\Documents\terceiro_periodo\Trabalho_po_sequenciamento_maquina\SequenciamentoMaquinaUnica\pulp\sq.dat
+Relatorio tecnico do otimizador: C:\Users\admin\Documents\terceiro_periodo\Trabalho_po_sequenciamento_maquina\SequenciamentoMaquinaUnica\pulp\relatorio_pulp.txt
+
+Observacao
+A ordem acima e a programacao recomendada pelo PuLP/CBC para reduzir o custo total de antecipacao e atraso.

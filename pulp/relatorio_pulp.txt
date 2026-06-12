@@ -1,0 +1,11 @@
+RELATORIO TECNICO DO OTIMIZADOR
+
+Solver: PuLP/CBC
+Status: Optimal
+Objetivo: 716
+
+Variaveis S (inicio), T (atraso), E (antecipacao)
+L1C1: S=0 T=12 E=0
+L2C1: S=16 T=31 E=0
+L2C2: S=40 T=55 E=0
+L1C2: S=60 T=81 E=0

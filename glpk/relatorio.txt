@@ -1,0 +1,89 @@
+Problem:    sq
+Rows:       23
+Columns:    24 (12 integer, 12 binary)
+Non-zeros:  68
+Status:     INTEGER OPTIMAL
+Objective:  Custo = 3405 (MINimum)
+
+   No.   Row name        Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 Custo                    3405                             
+     2 c1[L1C1,L1C2]
+                                 -34         -9975               
+     3 c1[L1C1,L2C1]
+                                 -20         -9975               
+     4 c1[L1C1,L2C2]
+                               -9975         -9975               
+     5 c1[L1C2,L1C1]
+                               -9970         -9990               
+     6 c1[L1C2,L2C1]
+                               -9990         -9990               
+     7 c1[L1C2,L2C2]
+                               -9936         -9990               
+     8 c1[L2C1,L1C1]
+                               -9980         -9980               
+     9 c1[L2C1,L1C2]
+                                 -14         -9980               
+    10 c1[L2C1,L2C2]
+                               -9955         -9980               
+    11 c1[L2C2,L1C1]
+                                 -30         -9844               
+    12 c1[L2C2,L1C2]
+                                 -64         -9844               
+    13 c1[L2C2,L2C1]
+                                 -50         -9844               
+    14 c2[L1C1,L1C2]
+                                   1             1             = 
+    15 c2[L1C1,L2C1]
+                                   1             1             = 
+    16 c2[L1C1,L2C2]
+                                   1             1             = 
+    17 c2[L1C2,L2C1]
+                                   1             1             = 
+    18 c2[L1C2,L2C2]
+                                   1             1             = 
+    19 c2[L2C1,L2C2]
+                                   1             1             = 
+    20 c3[L1C1]                   -4            -4             = 
+    21 c3[L1C2]                   11            11             = 
+    22 c3[L2C1]                   15            15             = 
+    23 c3[L2C2]                 -121          -121             = 
+
+   No. Column name       Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 S[L1C1]                    34             0               
+     2 S[L1C2]                     0             0               
+     3 S[L2C1]                    14             0               
+     4 S[L2C2]                    64             0               
+     5 T[L1C1]                    38             0               
+     6 T[L1C2]                     0             0               
+     7 T[L2C1]                     0             0               
+     8 T[L2C2]                   185             0               
+     9 E[L1C1]                     0             0               
+    10 E[L1C2]                    11             0               
+    11 E[L2C1]                     1             0               
+    12 E[L2C2]                     0             0               
+    13 x[L1C1,L1C2] *              0             0             1 
+    14 x[L1C1,L2C1] *              0             0             1 
+    15 x[L1C1,L2C2] *              1             0             1 
+    16 x[L1C2,L1C1] *              1             0             1 
+    17 x[L1C2,L2C1] *              1             0             1 
+    18 x[L1C2,L2C2] *              1             0             1 
+    19 x[L2C1,L1C1] *              1             0             1 
+    20 x[L2C1,L1C2] *              0             0             1 
+    21 x[L2C1,L2C2] *              1             0             1 
+    22 x[L2C2,L1C1] *              0             0             1 
+    23 x[L2C2,L1C2] *              0             0             1 
+    24 x[L2C2,L2C1] *              0             0             1 
+
+Integer feasibility conditions:
+
+KKT.PE: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+KKT.PB: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+End of output

@@ -3,24 +3,24 @@ L1C1 L1C2
 L2C1 L2C2
 ;
 
-param a := 5.0;
-param b := 15.0;
+param a := 1.0;
+param b := 4.0;
 
 param p :=
-L1C1 25  L1C2 10
-L2C1 20  L2C2 156
+L1C1 16  L1C2 25
+L2C1 20  L2C2 20
 ;
 
 param d :=
-L1C1 21  L1C2 21
-L2C1 35  L2C2 35
+L1C1 4  L1C2 4
+L2C1 5  L2C2 5
 ;
 
 param setup :
        L1C1 L1C2 L2C1 L2C2 :=
-L1C1    0    5    0    5
+L1C1    0    4    0    4
 L1C2    4    0    4    0
-L2C1    0    5    0    5
+L2C1    0    4    0    4
 L2C2    4    0    4    0
 ;
 
