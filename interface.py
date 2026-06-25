@@ -320,6 +320,7 @@ class JanelaPedidos:
         try:
             custo_ante = float(custo_ante_txt) if custo_ante_txt else 0.0
             custo_atraso = float(custo_atraso_txt) if custo_atraso_txt else 0.0
+            tempo = float(data_txt)
         except ValueError:
             return
 
@@ -342,7 +343,7 @@ class JanelaPedidos:
                     continue
                 lista_chapas.append((chapa_id, q))
 
-        inserir_pedido(data_txt, custo_atraso, custo_ante, lista_chapas)
+        inserir_pedido(tempo, custo_atraso, custo_ante, lista_chapas)
 
         self.data.delete(0, tk.END)
         self.custo_ante.delete(0, tk.END)

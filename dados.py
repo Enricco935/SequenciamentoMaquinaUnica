@@ -96,6 +96,6 @@ for id, data_termino, custo_antecipacao, custo_atraso, tempo_processamento, chap
 #tempo de setup entre uma chapa e outra e representado por dicionario
 for pedido in pedidos:
     for chapa in pedido.chapas:
-        jobs.append(Job(chapa.id_chapa,chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
+        jobs.append(Job(chapa.id, chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
 
 entrada = dados_entrada_modelo(jobs, dados_setups)
