@@ -14,7 +14,8 @@ class Pedido:
         self.custo_atraso = custo_atraso
 class Job: 
     # informacoes necessarias para cada job
-    def __init__(self, tempo_processamento, data_termino, setup, custo_antecipacao, custo_atraso):
+    def __init__(self, id_chapa ,tempo_processamento, data_termino, custo_antecipacao, custo_atraso):
+        self.id_chapa = id_chapa
         self.tempo_processamento = tempo_processamento
         self.data_termino = data_termino
         self.custo_antecipacao = custo_antecipacao
@@ -43,6 +44,8 @@ def dicionario_setup(dados_setup):
         setups[(origem, destino)] = tempo
     return setups
 
+
+
 def chapas_por_pedido(pedido_id):
     chapas = []
     dados_chapas_pedido = listar_chapas_por_pedido(pedido_id)
@@ -58,15 +61,19 @@ def dados_entrada_modelo(jobs, dados_setup):
     vetor_data_termino = []
     vetor_custo_antecipacao = []
     vetor_custo_atraso = []
+    matriz_setup = []
     setups = dicionario_setup(dados_setup)
 
-    for job in jobs:
+    for i ,job in enumerate(jobs):
+        matriz_setup.append([])
+        for job2 in jobs:
+            matriz_setup[i].append(setups[(job.id_chapa,job2.id_chapa)])
         vetor_tempo_processamento.append(job.tempo_processamento)
         vetor_data_termino.append(job.data_termino)
         vetor_custo_antecipacao.append(job.custo_antecipacao)
         vetor_custo_atraso.append(job.custo_atraso)
 
-    return Entrada_Modelo(n_jobs, vetor_tempo_processamento, vetor_data_termino, setups, vetor_custo_antecipacao, vetor_custo_atraso)
+    return Entrada_Modelo(n_jobs, vetor_tempo_processamento, vetor_data_termino, matriz_setup, vetor_custo_antecipacao, vetor_custo_atraso)
     
 
 dados_chapas = listar_chapas()
@@ -89,6 +96,6 @@ for id, data_termino, custo_antecipacao, custo_atraso, tempo_processamento, chap
 #tempo de setup entre uma chapa e outra e representado por dicionario
 for pedido in pedidos:
     for chapa in pedido.chapas:
-        jobs.append(Job(chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
+        jobs.append(Job(chapa.id_chapa,chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
 
 entrada = dados_entrada_modelo(jobs, dados_setups)

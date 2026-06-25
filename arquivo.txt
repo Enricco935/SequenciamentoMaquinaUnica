@@ -15,7 +15,7 @@ M = dt.entrada.M  # big M
 # ==== CRIAR VARIÁVEIS DE DECISÃO ====
 
 # s[i] = tempo de início do job i
-s = [LpVariable(f"s_{i}", lowBound=0, cat='Continuous') for i in range(n)]
+s = [LpVariable(f"s{i}", lowBound=0, cat='Continuous') for i in range(n)]
 
 # y[i][j] = 1 se job i vem antes do job j
 y = [[LpVariable(f"y_{i}_{j}", cat='Binary') for j in range(n)] for i in range(n)]
