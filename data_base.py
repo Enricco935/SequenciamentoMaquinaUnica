@@ -21,7 +21,7 @@ def criar_banco():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS pedidos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        data_termino TEXT,
+        data_termino REAL,
         custo_atraso REAL,
         custo_antecipacao REAL,
         tempo_processamento REAL

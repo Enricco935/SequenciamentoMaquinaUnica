@@ -55,7 +55,7 @@ for i in range(n):
 prob.solve()
 
 for i in range(n):
-    print(f"Job {i}: Início = {value(s[i]):.2f}, Término = {value(s[i]) + P[i]:.2f}")
+    print(f"Job {i} ({dt.entrada.nome_chapas[i]}): Início = {value(s[i]):.2f}, Término = {value(s[i]) + P[i]:.2f}")
 
 
 #Quando nois pegar pra fazer esse trem junto...
