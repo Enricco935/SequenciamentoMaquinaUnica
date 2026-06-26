@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 from data_base import listar_chapas, inserir_chapa, deletar_chapa, inserir_pedido, listar_pedidos, deletar_pedido, listar_chapas_por_pedido, listar_setups, atualizar_setup
 
@@ -40,7 +40,8 @@ class InterfacePrincipal:
         tk.Button(
             self.root,
             text="Resolver Modelo",
-            width=30
+            width=30,
+            command=self.resolver_modelo
         ).pack(pady=10)
 
     def abrir_janela_chapas(self):
@@ -49,6 +50,9 @@ class InterfacePrincipal:
         JanelaPedidos(self.root)
     def abrir_janela_setups(self):
         JanelaSetups(self.root)
+
+    def resolver_modelo(self):
+        JanelaResolver(self.root)
 
 class JanelaChapas:
 
@@ -237,7 +241,6 @@ class JanelaPedidos:
         btn_frame.pack(fill="x", padx=10, pady=8)
         tk.Button(btn_frame, text="Salvar Pedido", command=self.salvar_pedido).pack(side="left")
         tk.Button(btn_frame, text="Excluir Pedido Selecionado", command=self.excluir_pedido).pack(side="left", padx=8)
-        tk.Button(btn_frame, text="Ver Detalhes do Pedido", command=self.ver_detalhes_pedido).pack(side="left")
 
         table_frame = tk.Frame(self.window)
         table_frame.pack(fill="both", expand=True, padx=10, pady=8)
@@ -490,3 +493,75 @@ class JanelaSetups:
             atualizar_setup(origem, destino, tempo)
 
         self.window.destroy()
+
+
+class JanelaResolver:
+    def __init__(self, parent):
+        self.window = tk.Toplevel(parent)
+        self.window.title("Resolver Modelo")
+        self.window.geometry("400x160")
+
+        tk.Label(self.window, text="Escolha o pedido para resolver:").pack(anchor="w", padx=10, pady=(12, 4))
+
+        self.pedidos = listar_pedidos()
+        opcoes = ["Todos os pedidos"] + [f"Pedido {p[0]} (término {p[1]:.0f})" for p in self.pedidos]
+        self.combo = ttk.Combobox(self.window, values=opcoes, state="readonly")
+        self.combo.current(0)
+        self.combo.pack(fill="x", padx=10)
+
+        tk.Button(self.window, text="Resolver", command=self.resolver).pack(pady=14)
+
+    def resolver(self):
+        from modelo import resolver
+        idx = self.combo.current()
+        pedido_id = None if idx == 0 else self.pedidos[idx - 1][0]
+        try:
+            resultado = resolver(pedido_id)
+        except Exception as erro:
+            messagebox.showerror("Erro", f"Não foi possível resolver o modelo:\n{erro}")
+            return
+
+        if resultado["status"] != "Optimal":
+            messagebox.showwarning("Aviso", f"Solução não ótima (status: {resultado['status']}).")
+            return
+
+        JanelaResultado(self.window, resultado)
+
+
+class JanelaResultado:
+    def __init__(self, parent, resultado):
+        self.window = tk.Toplevel(parent)
+        self.window.title("Resultado da Programação")
+        self.window.geometry("680x380")
+
+        # ----- Resumo -----
+        resumo = tk.Frame(self.window)
+        resumo.pack(fill="x", padx=10, pady=8)
+        tk.Label(resumo, text=f"Status: {resultado['status']}", anchor="w").pack(anchor="w")
+        tk.Label(resumo, text=f"Custo total: R$ {resultado['custo']:.2f}", anchor="w").pack(anchor="w")
+        tk.Label(resumo, text=f"Custo por antecipação: R$ {resultado['custo_antecipacao']:.2f}", anchor="w").pack(anchor="w")
+        tk.Label(resumo, text=f"Custo por atraso: R$ {resultado['custo_atraso']:.2f}", anchor="w").pack(anchor="w")
+
+        # ----- Tabela em ordem de produção -----
+        tk.Label(self.window, text="Ordem de produção").pack(anchor="w", padx=10)
+        tabela = ttk.Treeview(
+            self.window,
+            columns=("ordem", "chapa", "inicio", "fim", "prazo", "atraso"),
+            show="headings",
+            height=8
+        )
+        for col, titulo, larg in [
+            ("ordem", "Ordem", 60), ("chapa", "Chapa", 200),
+            ("inicio", "Início", 100), ("fim", "Término", 100),
+            ("prazo", "Prazo", 100), ("atraso", "Atraso", 100),
+        ]:
+            tabela.heading(col, text=titulo)
+            tabela.column(col, width=larg)
+        tabela.pack(fill="both", expand=True, padx=10, pady=8)
+
+        for ordem, job in enumerate(resultado["jobs"], start=1):
+            tabela.insert("", tk.END, values=(
+                ordem, job["nome"],
+                f"{job['inicio']:.0f}", f"{job['fim']:.0f}",
+                f"{job['prazo']:.0f}", f"{job['atraso']:.0f}",
+            ))

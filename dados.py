@@ -96,28 +96,27 @@ def dados_entrada_modelo(jobs, dados_setup):
     return Entrada_Modelo(vetor_chapas, n_jobs, vetor_tempo_processamento, vetor_data_termino, matriz_setup, vetor_custo_antecipacao, vetor_custo_atraso)
     
 
-dados_chapas = listar_chapas()
-dados_setups = listar_setups()
-dados_pedido = listar_pedidos()
+def carregar_entrada(pedido_id=None):
+    dados_chapas = listar_chapas()
+    dados_setups = listar_setups()
+    dados_pedido = listar_pedidos()
 
-chapas = []
-pedidos = []
-jobs = []
-setups = dicionario_setup(dados_setups)
-entrada = None
+    chapas = []
+    pedidos = []
+    jobs = []
 
-#===== preenche chapas
-for i, (id_chapa, tipo, tempo_processamento) in enumerate(dados_chapas):
-    chapas.append(Chapa(id_chapa, tipo, tempo_processamento))
+    #===== preenche chapas
+    for i, (id_chapa, tipo, tempo_processamento) in enumerate(dados_chapas):
+        chapas.append(Chapa(id_chapa, tipo, tempo_processamento))
 
-for id, data_termino, custo_antecipacao, custo_atraso, tempo_processamento, chapas_distintas, qtd_chapas in dados_pedido:
-    pedidos.append(Pedido(id, chapas_por_pedido(id), tempo_processamento, data_termino, custo_antecipacao, custo_atraso))
+    for id, data_termino, custo_antecipacao, custo_atraso, tempo_processamento, chapas_distintas, qtd_chapas in dados_pedido:
+        if pedido_id is not None and id != pedido_id:
+            continue
+        pedidos.append(Pedido(id, chapas_por_pedido(id), tempo_processamento, data_termino, custo_antecipacao, custo_atraso))
 
-#tempo de setup entre uma chapa e outra e representado por dicionario
-for pedido in pedidos:
-    for chapa in pedido.chapas:
-        jobs.append(Job(chapa.tipo, chapa.id, chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
+    #tempo de setup entre uma chapa e outra e representado por dicionario
+    for pedido in pedidos:
+        for chapa in pedido.chapas:
+            jobs.append(Job(chapa.tipo, chapa.id, chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
 
-entrada = dados_entrada_modelo(jobs, dados_setups)
-
-print(entrada)
+    return dados_entrada_modelo(jobs, dados_setups)
