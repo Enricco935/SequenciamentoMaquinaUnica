@@ -47,7 +47,7 @@ for i in range(n):
             continue
         
         prob += s[j] - s[i] - ((M + S[i][j]) * y[i][j]) >= P[i] - M
-        prob += y[i][j] + y[j][i] <= 1
+        prob += y[i][j] + y[j][i] == 1
     prob += s[i]+P[i]+e[i]-t[i] == D[i]
         
 #a
@@ -56,6 +56,10 @@ prob.solve()
 
 for i in range(n):
     print(f"Job {i} ({dt.entrada.nome_chapas[i]}): Início = {value(s[i]):.2f}, Término = {value(s[i]) + P[i]:.2f}")
+    
+print(f"{value(prob.objective)}");
+    
+    
 
 
 #Quando nois pegar pra fazer esse trem junto...
