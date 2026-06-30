@@ -15,6 +15,7 @@ def resolver(pedido_id=None):
     b = entrada.b  # custo atraso
     S = entrada.S  # setup times
     M = entrada.M  # big M
+    pedido_ids = entrada.pedido_ids
 
     # Variáveis
     s = []
@@ -58,6 +59,7 @@ def resolver(pedido_id=None):
     for i in range(n):
         jobs.append({
             "nome": entrada.nome_chapas[i],
+            "pedido": pedido_ids[i],
             "inicio": value(s[i]),
             "fim": value(s[i]) + P[i],
             "prazo": D[i],

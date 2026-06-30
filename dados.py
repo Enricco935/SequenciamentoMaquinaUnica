@@ -14,15 +14,16 @@ class Pedido:
         self.custo_atraso = custo_atraso
 class Job: 
     # informacoes necessarias para cada job
-    def __init__(self, nome_chapa, id_chapa ,tempo_processamento, data_termino, custo_antecipacao, custo_atraso):
+    def __init__(self, nome_chapa, id_chapa ,tempo_processamento, data_termino, custo_antecipacao, custo_atraso, pedido_id):
         self.nome_chapa = nome_chapa
         self.id_chapa = id_chapa
         self.tempo_processamento = tempo_processamento
         self.data_termino = data_termino
         self.custo_antecipacao = custo_antecipacao
         self.custo_atraso = custo_atraso
+        self.pedido_id = pedido_id
 class Entrada_Modelo:
-    def __init__(self, nome_chapas, n, P, D, S, a, b):
+    def __init__(self, nome_chapas, n, P, D, S, a, b, pedido_ids):
         self.nome_chapas = nome_chapas
         self.n = n #numero de jobs
         self.P = P #vetor 
@@ -30,6 +31,7 @@ class Entrada_Modelo:
         self.S = S #matriz Setup
         self.a = a #vetor custo antecipacao dos jobs
         self.b = b #vetor custo atraso dos jobs
+        self.pedido_ids = pedido_ids
         self.M = 99999
     def __repr__(self):
         S_str = "\n".join(f"    {linha}" for linha in self.S)
@@ -83,6 +85,7 @@ def dados_entrada_modelo(jobs, dados_setup):
     setups = dicionario_setup(dados_setup)
     
 
+    vetor_pedido_ids = []
     for i ,job in enumerate(jobs):
         matriz_setup.append([])
         for job2 in jobs:
@@ -92,8 +95,9 @@ def dados_entrada_modelo(jobs, dados_setup):
         vetor_custo_antecipacao.append(job.custo_antecipacao)
         vetor_custo_atraso.append(job.custo_atraso)
         vetor_chapas.append(job.nome_chapa)
+        vetor_pedido_ids.append(job.pedido_id)
 
-    return Entrada_Modelo(vetor_chapas, n_jobs, vetor_tempo_processamento, vetor_data_termino, matriz_setup, vetor_custo_antecipacao, vetor_custo_atraso)
+    return Entrada_Modelo(vetor_chapas, n_jobs, vetor_tempo_processamento, vetor_data_termino, matriz_setup, vetor_custo_antecipacao, vetor_custo_atraso, vetor_pedido_ids)
     
 
 def carregar_entrada(pedido_id=None):
@@ -109,14 +113,21 @@ def carregar_entrada(pedido_id=None):
     for i, (id_chapa, tipo, tempo_processamento) in enumerate(dados_chapas):
         chapas.append(Chapa(id_chapa, tipo, tempo_processamento))
 
+    ids_selecionados = None
+    if pedido_id is not None:
+        if isinstance(pedido_id, (list, tuple, set)):
+            ids_selecionados = set(pedido_id)
+        else:
+            ids_selecionados = {pedido_id}
+
     for id, data_termino, custo_antecipacao, custo_atraso, tempo_processamento, chapas_distintas, qtd_chapas in dados_pedido:
-        if pedido_id is not None and id != pedido_id:
+        if ids_selecionados is not None and id not in ids_selecionados:
             continue
         pedidos.append(Pedido(id, chapas_por_pedido(id), tempo_processamento, data_termino, custo_antecipacao, custo_atraso))
 
     #tempo de setup entre uma chapa e outra e representado por dicionario
     for pedido in pedidos:
         for chapa in pedido.chapas:
-            jobs.append(Job(chapa.tipo, chapa.id, chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso))
+            jobs.append(Job(chapa.tipo, chapa.id, chapa.tempo_processamento, pedido.data_termino, pedido.custo_antecipacao, pedido.custo_atraso, pedido.id))
 
     return dados_entrada_modelo(jobs, dados_setups)

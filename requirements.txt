@@ -1,0 +1,10 @@
+altgraph==0.17.5
+charset-normalizer==3.4.7
+packaging==26.2
+pillow==12.2.0
+PuLP==3.3.2
+pyinstaller==6.21.0
+pyinstaller-hooks-contrib==2026.6
+reportlab==5.0.0
+setuptools==82.0.1
+tksheet==7.6.0

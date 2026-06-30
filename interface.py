@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 
 from data_base import listar_chapas, inserir_chapa, deletar_chapa, inserir_pedido, listar_pedidos, deletar_pedido, listar_chapas_por_pedido, listar_setups, atualizar_setup
 
@@ -24,14 +24,14 @@ class InterfacePrincipal:
 
         tk.Button(
             self.root,
-            text="Cadastrar Pedidos",
+            text="Pedidos",
             width=30,
             command=self.abrir_janela_pedidos
         ).pack(pady=10)
 
         tk.Button(
             self.root,
-            text="Cadastrar Setups",
+            text="Setups",
             width=30
         ,
             command=self.abrir_janela_setups
@@ -39,7 +39,7 @@ class InterfacePrincipal:
 
         tk.Button(
             self.root,
-            text="Resolver Modelo",
+            text="Gerar Sequência",
             width=30,
             command=self.resolver_modelo
         ).pack(pady=10)
@@ -211,7 +211,7 @@ class QuantidadeDialog:
 class JanelaPedidos:
     def __init__(self, parent):
         self.window = tk.Toplevel(parent)
-        self.window.title("Cadastro de Pedidos")
+        self.window.title("Pedidos")
         self.window.geometry("900x560")
 
         form_frame = tk.Frame(self.window)
@@ -499,24 +499,68 @@ class JanelaResolver:
     def __init__(self, parent):
         self.window = tk.Toplevel(parent)
         self.window.title("Resolver Modelo")
-        self.window.geometry("400x160")
+        self.window.geometry("520x420")
 
-        tk.Label(self.window, text="Escolha o pedido para resolver:").pack(anchor="w", padx=10, pady=(12, 4))
+        tk.Label(self.window, text="Selecione os pedidos para resolver:").pack(anchor="w", padx=10, pady=(12, 4))
 
         self.pedidos = listar_pedidos()
-        opcoes = ["Todos os pedidos"] + [f"Pedido {p[0]} (término {p[1]:.0f})" for p in self.pedidos]
-        self.combo = ttk.Combobox(self.window, values=opcoes, state="readonly")
-        self.combo.current(0)
-        self.combo.pack(fill="x", padx=10)
+        self.vars = []
 
-        tk.Button(self.window, text="Resolver", command=self.resolver).pack(pady=14)
+        if not self.pedidos:
+            tk.Label(self.window, text="Nenhum pedido cadastrado.").pack(anchor="w", padx=10, pady=8)
+            tk.Button(self.window, text="Fechar", command=self.window.destroy).pack(pady=10)
+            return
+
+        frame_lista = tk.Frame(self.window)
+        frame_lista.pack(fill="both", expand=True, padx=10, pady=6)
+
+        canvas = tk.Canvas(frame_lista, height=220)
+        scrollbar = tk.Scrollbar(frame_lista, orient="vertical", command=canvas.yview)
+        self.scrollable_frame = tk.Frame(canvas)
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        for pedido in self.pedidos:
+            pedido_id, data_termino, custo_ante, custo_atraso, tempo_proc, qtd_chapas, qtd_total = pedido
+            var = tk.BooleanVar(value=False)
+            self.vars.append((pedido_id, var))
+            tk.Checkbutton(
+                self.scrollable_frame,
+                text=f"Pedido {pedido_id} | prazo {data_termino:.0f} | chapas {qtd_chapas} | qtd total {qtd_total}",
+                variable=var
+            ).pack(anchor="w", padx=4, pady=2)
+
+        btn_frame = tk.Frame(self.window)
+        btn_frame.pack(fill="x", padx=10, pady=10)
+        tk.Button(btn_frame, text="Resolver", command=self.resolver).pack(side="left")
+        tk.Button(btn_frame, text="Selecionar todos", command=self.marcar_todos).pack(side="left", padx=6)
+        tk.Button(btn_frame, text="Limpar", command=self.desmarcar_todos).pack(side="left")
+
+    def marcar_todos(self):
+        for _, var in self.vars:
+            var.set(True)
+
+    def desmarcar_todos(self):
+        for _, var in self.vars:
+            var.set(False)
 
     def resolver(self):
         from modelo import resolver
-        idx = self.combo.current()
-        pedido_id = None if idx == 0 else self.pedidos[idx - 1][0]
+
+        pedidos_selecionados = [pedido_id for pedido_id, var in self.vars if var.get()]
+        if not pedidos_selecionados:
+            messagebox.showwarning("Aviso", "Selecione ao menos um pedido para resolver.")
+            return
+
         try:
-            resultado = resolver(pedido_id)
+            resultado = resolver(pedidos_selecionados)
         except Exception as erro:
             messagebox.showerror("Erro", f"Não foi possível resolver o modelo:\n{erro}")
             return
@@ -546,14 +590,14 @@ class JanelaResultado:
         tk.Label(self.window, text="Ordem de produção").pack(anchor="w", padx=10)
         tabela = ttk.Treeview(
             self.window,
-            columns=("ordem", "chapa", "inicio", "fim", "prazo", "atraso"),
+            columns=("ordem", "pedido", "chapa", "inicio", "fim", "prazo", "atraso"),
             show="headings",
             height=8
         )
         for col, titulo, larg in [
-            ("ordem", "Ordem", 60), ("chapa", "Chapa", 200),
-            ("inicio", "Início", 100), ("fim", "Término", 100),
-            ("prazo", "Prazo", 100), ("atraso", "Atraso", 100),
+            ("ordem", "Ordem", 60), ("pedido", "Pedido", 80), ("chapa", "Chapa", 150),
+            ("inicio", "Início", 90), ("fim", "Término", 90),
+            ("prazo", "Prazo", 90), ("atraso", "Atraso", 90),
         ]:
             tabela.heading(col, text=titulo)
             tabela.column(col, width=larg)
@@ -561,7 +605,90 @@ class JanelaResultado:
 
         for ordem, job in enumerate(resultado["jobs"], start=1):
             tabela.insert("", tk.END, values=(
-                ordem, job["nome"],
+                ordem, job["pedido"], job["nome"],
                 f"{job['inicio']:.0f}", f"{job['fim']:.0f}",
                 f"{job['prazo']:.0f}", f"{job['atraso']:.0f}",
             ))
+
+        # Botão para salvar PDF
+        botoes = tk.Frame(self.window)
+        botoes.pack(fill="x", padx=10, pady=8)
+        tk.Button(
+            botoes,
+            text="Exportar para PDF",
+            command=lambda: self.salvar_pdf(resultado)
+        ).pack(side="right")
+
+    def salvar_pdf(self, resultado):
+        caminho = filedialog.asksaveasfilename(
+            title="Salvar resultado como PDF",
+            defaultextension=".pdf",
+            filetypes=[("PDF", "*.pdf")]
+        )
+        if not caminho:
+            return
+
+        try:
+            from reportlab.lib.pagesizes import A4
+            from reportlab.pdfgen import canvas
+            from reportlab.lib.units import mm
+        except ImportError:
+            messagebox.showerror("Erro", "A biblioteca reportlab não está instalada.")
+            return
+
+        largura, altura = A4
+        c = canvas.Canvas(caminho, pagesize=A4)
+        x_margin = 20 * mm
+        y_margin = 20 * mm
+        y = altura - y_margin
+
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(x_margin, y, "Resultado da Programação")
+        y -= 12 * mm
+
+        c.setFont("Helvetica", 10)
+        c.drawString(x_margin, y, f"Status: {resultado['status']}")
+        y -= 6 * mm
+        c.drawString(x_margin, y, f"Custo total: R$ {resultado['custo']:.2f}")
+        y -= 6 * mm
+        c.drawString(x_margin, y, f"Custo por antecipação: R$ {resultado['custo_antecipacao']:.2f}")
+        y -= 6 * mm
+        c.drawString(x_margin, y, f"Custo por atraso: R$ {resultado['custo_atraso']:.2f}")
+        y -= 10 * mm
+
+        c.setFont("Helvetica-Bold", 10)
+        headers = ["Ordem", "Pedido", "Chapa", "Início", "Término", "Prazo", "Atraso"]
+        col_widths = [20 * mm, 25 * mm, 45 * mm, 20 * mm, 25 * mm, 20 * mm, 20 * mm]
+        x = x_margin
+        for h, w in zip(headers, col_widths):
+            c.drawString(x, y, h)
+            x += w
+
+        y -= 6 * mm
+        c.setFont("Helvetica", 9)
+
+        for ordem, job in enumerate(resultado['jobs'], start=1):
+            if y < y_margin + 30 * mm:
+                c.showPage()
+                y = altura - y_margin
+                c.setFont("Helvetica-Bold", 10)
+                x = x_margin
+                for h, w in zip(headers, col_widths):
+                    c.drawString(x, y, h)
+                    x += w
+                y -= 6 * mm
+                c.setFont("Helvetica", 9)
+
+            x = x_margin
+            values = [
+                str(ordem), str(job['pedido']), str(job['nome']),
+                f"{job['inicio']:.0f}", f"{job['fim']:.0f}",
+                f"{job['prazo']:.0f}", f"{job['atraso']:.0f}"
+            ]
+            for v, w in zip(values, col_widths):
+                c.drawString(x, y, v)
+                x += w
+            y -= 6 * mm
+
+        c.save()
+        messagebox.showinfo("PDF salvo", f"Arquivo salvo em:\n{caminho}")
